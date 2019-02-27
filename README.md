@@ -1,5 +1,8 @@
 # cod-recover
 
+[![Build Status](https://img.shields.io/travis/vicanso/cod-recover.svg?label=linux+build)](https://travis-ci.org/vicanso/cod-recover)
+
+
 Recover middleware for cod, it can get panic error to avoid application crash.
 
 ```go

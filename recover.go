@@ -24,8 +24,8 @@ import (
 )
 
 const (
-	// ErrCategoryRecover recover error category
-	ErrCategoryRecover = "cod-recover"
+	// ErrCategory recover error category
+	ErrCategory = "cod-recover"
 )
 
 // New new recover
@@ -37,7 +37,7 @@ func New() cod.Handler {
 				err, ok := r.(error)
 				if !ok {
 					he := hes.NewWithErrorStatusCode(fmt.Errorf("%v", r), http.StatusInternalServerError)
-					he.Category = ErrCategoryRecover
+					he.Category = ErrCategory
 					err = he
 				}
 				c.Cod(nil).EmitError(c, err)
