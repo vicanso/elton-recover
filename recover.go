@@ -41,6 +41,15 @@ func New() cod.Handler {
 					err = he
 				}
 				c.Cod(nil).EmitError(c, err)
+				// 出错时清除部分响应头
+				for _, key := range []string{
+					cod.HeaderETag,
+					cod.HeaderLastModified,
+					cod.HeaderContentEncoding,
+					cod.HeaderContentLength,
+				} {
+					c.SetHeader(key, "")
+				}
 				// 如果已直接对Response写入数据，则将 Committed设置为 true
 				c.Committed = true
 				resp := c.Response

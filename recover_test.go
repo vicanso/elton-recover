@@ -18,6 +18,15 @@ func TestRecover(t *testing.T) {
 	})
 	req := httptest.NewRequest("GET", "https://aslant.site/", nil)
 	resp := httptest.NewRecorder()
+	keys := []string{
+		cod.HeaderETag,
+		cod.HeaderLastModified,
+		cod.HeaderContentEncoding,
+		cod.HeaderContentLength,
+	}
+	for _, key := range keys {
+		resp.Header().Set(key, "a")
+	}
 
 	catchError := false
 	d.OnError(func(_ *cod.Context, _ error) {
@@ -30,5 +39,10 @@ func TestRecover(t *testing.T) {
 		!ctx.Committed ||
 		!catchError {
 		t.Fatalf("recover fail")
+	}
+	for _, key := range keys {
+		if resp.Header().Get(key) != "" {
+			t.Fatalf("reset response header fail")
+		}
 	}
 }
