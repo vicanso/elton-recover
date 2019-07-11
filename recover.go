@@ -40,7 +40,7 @@ func New() cod.Handler {
 					he.Category = ErrCategory
 					err = he
 				}
-				c.Cod(nil).EmitError(c, err)
+				c.Cod().EmitError(c, err)
 				// 出错时清除部分响应头
 				for _, key := range []string{
 					cod.HeaderETag,
