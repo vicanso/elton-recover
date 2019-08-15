@@ -20,17 +20,17 @@ import (
 
 	"github.com/vicanso/hes"
 
-	"github.com/vicanso/cod"
+	"github.com/vicanso/elton"
 )
 
 const (
 	// ErrCategory recover error category
-	ErrCategory = "cod-recover"
+	ErrCategory = "elton-recover"
 )
 
 // New new recover
-func New() cod.Handler {
-	return func(c *cod.Context) error {
+func New() elton.Handler {
+	return func(c *elton.Context) error {
 		defer func() {
 			// 可针对实际需求调整，如对于每个recover增加邮件通知等
 			if r := recover(); r != nil {
@@ -40,13 +40,13 @@ func New() cod.Handler {
 					he.Category = ErrCategory
 					err = he
 				}
-				c.Cod().EmitError(c, err)
+				c.Elton().EmitError(c, err)
 				// 出错时清除部分响应头
 				for _, key := range []string{
-					cod.HeaderETag,
-					cod.HeaderLastModified,
-					cod.HeaderContentEncoding,
-					cod.HeaderContentLength,
+					elton.HeaderETag,
+					elton.HeaderLastModified,
+					elton.HeaderContentEncoding,
+					elton.HeaderContentLength,
 				} {
 					c.SetHeader(key, "")
 				}

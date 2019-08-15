@@ -1,25 +1,25 @@
-# cod-recover
+# elton-recover
 
-[![Build Status](https://img.shields.io/travis/vicanso/cod-recover.svg?label=linux+build)](https://travis-ci.org/vicanso/cod-recover)
+[![Build Status](https://img.shields.io/travis/vicanso/elton-recover.svg?label=linux+build)](https://travis-ci.org/vicanso/elton-recover)
 
 
-Recover middleware for cod, it can get panic error to avoid application crash.
+Recover middleware for elton, it can get panic error to avoid application crash.
 
 ```go
 package main
 
 import (
-	"github.com/vicanso/cod"
+	"github.com/vicanso/elton"
 
-	recover "github.com/vicanso/cod-recover"
+	recover "github.com/vicanso/elton-recover"
 )
 
 func main() {
-	d := cod.New()
+	d := elton.New()
 
 	d.Use(recover.New())
 
-	d.GET("/", func(c *cod.Context) (err error) {
+	d.GET("/", func(c *elton.Context) (err error) {
 		panic("abcd")
 	})
 

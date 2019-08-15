@@ -8,38 +8,38 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/vicanso/cod"
+	"github.com/vicanso/elton"
 )
 
 func TestRecover(t *testing.T) {
 	assert := assert.New(t)
-	var ctx *cod.Context
-	d := cod.New()
+	var ctx *elton.Context
+	d := elton.New()
 	d.Use(New())
-	d.GET("/", func(c *cod.Context) error {
+	d.GET("/", func(c *elton.Context) error {
 		ctx = c
 		panic("abc")
 	})
 	req := httptest.NewRequest("GET", "https://aslant.site/", nil)
 	resp := httptest.NewRecorder()
 	keys := []string{
-		cod.HeaderETag,
-		cod.HeaderLastModified,
-		cod.HeaderContentEncoding,
-		cod.HeaderContentLength,
+		elton.HeaderETag,
+		elton.HeaderLastModified,
+		elton.HeaderContentEncoding,
+		elton.HeaderContentLength,
 	}
 	for _, key := range keys {
 		resp.Header().Set(key, "a")
 	}
 
 	catchError := false
-	d.OnError(func(_ *cod.Context, _ error) {
+	d.OnError(func(_ *elton.Context, _ error) {
 		catchError = true
 	})
 
 	d.ServeHTTP(resp, req)
 	assert.Equal(resp.Code, http.StatusInternalServerError)
-	assert.Equal(resp.Body.String(), "category=cod-recover, message=abc")
+	assert.Equal(resp.Body.String(), "category=elton-recover, message=abc")
 	assert.True(ctx.Committed)
 	assert.True(catchError)
 	for _, key := range keys {
