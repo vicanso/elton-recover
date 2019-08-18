@@ -36,10 +36,12 @@ func New() elton.Handler {
 			if r := recover(); r != nil {
 				err, ok := r.(error)
 				if !ok {
-					he := hes.NewWithErrorStatusCode(fmt.Errorf("%v", r), http.StatusInternalServerError)
-					he.Category = ErrCategory
-					err = he
+					err = fmt.Errorf("%v", r)
 				}
+
+				he := hes.Wrap(err)
+				he.Category = ErrCategory
+				err = he
 				c.Elton().EmitError(c, err)
 				// 出错时清除部分响应头
 				for _, key := range []string{
