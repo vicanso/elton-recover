@@ -16,7 +16,7 @@ func TestRecover(t *testing.T) {
 		assert := assert.New(t)
 		var ctx *elton.Context
 		d := elton.New()
-		d.Use(New(Config{}))
+		d.Use(New())
 		d.GET("/", func(c *elton.Context) error {
 			ctx = c
 			panic("abc")
@@ -51,13 +51,12 @@ func TestRecover(t *testing.T) {
 	t.Run("response json", func(t *testing.T) {
 		assert := assert.New(t)
 		d := elton.New()
-		d.Use(New(Config{
-			ResponseType: "json",
-		}))
+		d.Use(New())
 		d.GET("/", func(c *elton.Context) error {
 			panic("abc")
 		})
 		req := httptest.NewRequest("GET", "https://aslant.site/", nil)
+		req.Header.Set("Accept", "application/json, text/plain, */*")
 		resp := httptest.NewRecorder()
 		d.ServeHTTP(resp, req)
 		assert.Equal(500, resp.Code)

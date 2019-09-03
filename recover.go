@@ -17,6 +17,7 @@ package recover
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/vicanso/hes"
 
@@ -28,15 +29,8 @@ const (
 	ErrCategory = "elton-recover"
 )
 
-type (
-	// Config json parser config
-	Config struct {
-		ResponseType string
-	}
-)
-
 // New new recover
-func New(config Config) elton.Handler {
+func New() elton.Handler {
 	return func(c *elton.Context) error {
 		defer func() {
 			// 可针对实际需求调整，如对于每个recover增加邮件通知等
@@ -64,7 +58,7 @@ func New(config Config) elton.Handler {
 				c.Committed = true
 				resp := c.Response
 				buf := []byte(err.Error())
-				if config.ResponseType == "json" {
+				if strings.Contains(c.GetRequestHeader("Accept"), "application/json") {
 					c.SetHeader(elton.HeaderContentType, elton.MIMEApplicationJSON)
 					buf = he.ToJSON()
 				}
