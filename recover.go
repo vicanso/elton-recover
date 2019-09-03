@@ -28,8 +28,15 @@ const (
 	ErrCategory = "elton-recover"
 )
 
+type (
+	// Config json parser config
+	Config struct {
+		ResponseType string
+	}
+)
+
 // New new recover
-func New() elton.Handler {
+func New(config Config) elton.Handler {
 	return func(c *elton.Context) error {
 		defer func() {
 			// 可针对实际需求调整，如对于每个recover增加邮件通知等
@@ -41,6 +48,7 @@ func New() elton.Handler {
 
 				he := hes.Wrap(err)
 				he.Category = ErrCategory
+				he.StatusCode = http.StatusInternalServerError
 				err = he
 				c.Elton().EmitError(c, err)
 				// 出错时清除部分响应头
@@ -55,8 +63,13 @@ func New() elton.Handler {
 				// 如果已直接对Response写入数据，则将 Committed设置为 true
 				c.Committed = true
 				resp := c.Response
-				resp.WriteHeader(http.StatusInternalServerError)
-				resp.Write([]byte(err.Error()))
+				buf := []byte(err.Error())
+				if config.ResponseType == "json" {
+					c.SetHeader(elton.HeaderContentType, elton.MIMEApplicationJSON)
+					buf = he.ToJSON()
+				}
+				resp.WriteHeader(he.StatusCode)
+				resp.Write(buf)
 			}
 		}()
 		return c.Next()
