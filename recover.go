@@ -63,7 +63,10 @@ func New() elton.Handler {
 					buf = he.ToJSON()
 				}
 				resp.WriteHeader(he.StatusCode)
-				resp.Write(buf)
+				_, err = resp.Write(buf)
+				if err != nil {
+					c.Elton().EmitError(c, err)
+				}
 			}
 		}()
 		return c.Next()
