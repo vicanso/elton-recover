@@ -15,9 +15,9 @@ func TestRecover(t *testing.T) {
 	t.Run("response text", func(t *testing.T) {
 		assert := assert.New(t)
 		var ctx *elton.Context
-		d := elton.New()
-		d.Use(New())
-		d.GET("/", func(c *elton.Context) error {
+		e := elton.New()
+		e.Use(New())
+		e.GET("/", func(c *elton.Context) error {
 			ctx = c
 			panic("abc")
 		})
@@ -34,11 +34,11 @@ func TestRecover(t *testing.T) {
 		}
 
 		catchError := false
-		d.OnError(func(_ *elton.Context, _ error) {
+		e.OnError(func(_ *elton.Context, _ error) {
 			catchError = true
 		})
 
-		d.ServeHTTP(resp, req)
+		e.ServeHTTP(resp, req)
 		assert.Equal(resp.Code, http.StatusInternalServerError)
 		assert.Equal(resp.Body.String(), "category=elton-recover, message=abc")
 		assert.True(ctx.Committed)
@@ -50,15 +50,15 @@ func TestRecover(t *testing.T) {
 
 	t.Run("response json", func(t *testing.T) {
 		assert := assert.New(t)
-		d := elton.New()
-		d.Use(New())
-		d.GET("/", func(c *elton.Context) error {
+		e := elton.New()
+		e.Use(New())
+		e.GET("/", func(c *elton.Context) error {
 			panic("abc")
 		})
 		req := httptest.NewRequest("GET", "https://aslant.site/", nil)
 		req.Header.Set("Accept", "application/json, text/plain, */*")
 		resp := httptest.NewRecorder()
-		d.ServeHTTP(resp, req)
+		e.ServeHTTP(resp, req)
 		assert.Equal(500, resp.Code)
 		assert.Equal(elton.MIMEApplicationJSON, resp.Header().Get(elton.HeaderContentType))
 		assert.NotEmpty(resp.Body.Bytes())

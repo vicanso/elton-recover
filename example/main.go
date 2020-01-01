@@ -1,21 +1,23 @@
 package main
 
 import (
+	"errors"
+
 	"github.com/vicanso/elton"
 
 	recover "github.com/vicanso/elton-recover"
 )
 
 func main() {
-	d := elton.New()
+	e := elton.New()
 
-	d.Use(recover.New())
+	e.Use(recover.New())
 
-	d.GET("/", func(c *elton.Context) (err error) {
-		panic("abcd")
+	e.GET("/", func(c *elton.Context) (err error) {
+		panic(errors.New("abcd"))
 	})
 
-	err := d.ListenAndServe(":3000")
+	err := e.ListenAndServe(":3000")
 	if err != nil {
 		panic(err)
 	}
