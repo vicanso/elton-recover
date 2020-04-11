@@ -1,5 +1,7 @@
 # elton-recover
 
+The middleware has been archived, please use the middleware of [elton](https://github.com/vicanso/elton).
+
 [![Build Status](https://img.shields.io/travis/vicanso/elton-recover.svg?label=linux+build)](https://travis-ci.org/vicanso/elton-recover)
 
 
